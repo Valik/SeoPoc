@@ -16,6 +16,8 @@ namespace SeoPoc.Web.DataAccess.Entities
 
         public string TitleFormat { get; set; }
 
+        public string Url { get; set; }
+
         public int? CityId { get; set; }
 
         public int? DistrictId { get; set; }

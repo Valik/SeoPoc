@@ -21,5 +21,8 @@ namespace SeoPoc.Web.DataAccess.Entities
         public string PlaceholderName { get; set; } = "City";
 
         public string SeoParameterValuesJson { get; set; }
+
+        [InverseProperty("City")]
+        public virtual ICollection<DbDistrict> Districts { get; set; }
     }
 }

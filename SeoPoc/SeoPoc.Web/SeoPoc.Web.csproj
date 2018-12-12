@@ -202,6 +202,7 @@
     <Compile Include="DataAccess\Entities\DbDistrict.cs" />
     <Compile Include="DataAccess\Entities\DbSeoUrlAlias.cs" />
     <Compile Include="DataAccess\Entities\ISeoParameter.cs" />
+    <Compile Include="DataAccess\JsonEntities\SeoParameterValueJson.cs" />
     <Compile Include="DataAccess\JsonEntities\SeoParameterValuesJson.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

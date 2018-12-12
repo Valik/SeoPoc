@@ -2,7 +2,7 @@
 {
     public class SeoParameterValuesJson
     {
-        public string[] Values { get; set; }
+        public SeoParameterValueJson[] Values { get; set; }
 
         public int Version { get; } = 1;
     }
