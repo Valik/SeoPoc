@@ -1,23 +1,26 @@
-﻿@model SeoPoc.Web.Services.RouteResult
+﻿@using SeoPoc.Web.Helpers
+@model SeoPoc.Web.Services.RouteResult
 @{
-    ViewBag.Title = Model.SeoTitle;
+  ViewBag.Title = Model.IfNotNull(x => x.SeoTitle, "SEO POC");
 }
 
 <div class="jumbotron">
-    <h1>@Model.SeoTitle</h1>
+  <h1>@Model.IfNotNull(x => x.SeoTitle, "SEO POC")</h1>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>City</h2>
-        <p>
-            @Model.CityId
-        </p>
-    </div>
-    <div class="col-md-4">
-        <h2>District</h2>
-        <p>@Model.DistrictId</p>
-    </div>
-    <div class="col-md-4">
-    </div>
+  <div class="col-md-4">
+    <h2>City</h2>
+    <p>
+      @Model.IfNotNull(x => x.CityId)
+    </p>
+  </div>
+  <div class="col-md-4">
+    <h2>District</h2>
+    <p>
+      @Model.IfNotNull(x => x.DistrictId)
+    </p>
+  </div>
+  <div class="col-md-4">
+  </div>
 </div>

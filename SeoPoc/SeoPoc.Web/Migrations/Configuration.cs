@@ -66,7 +66,7 @@ namespace SeoPoc.Web.Migrations
                     new DbCitySeoParameter
                     {
                         Value = "Санкт-Петербург",
-                        Alias = "Novosibirsk"
+                        Alias = "Sankt-Peterburg"
                     },
                     new DbCitySeoParameter
                     {

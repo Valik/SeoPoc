@@ -7,6 +7,7 @@ using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 using SeoPoc.Web.DataAccess.Entities;
+using SeoPoc.Web.Migrations;
 using SeoPoc.Web.Models;
 
 namespace SeoPoc.Web.DataAccess
@@ -16,7 +17,7 @@ namespace SeoPoc.Web.DataAccess
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
-            Database.SetInitializer<ApplicationDbContext>(new DropCreateDatabaseAlways<ApplicationDbContext>());
+            Database.SetInitializer<ApplicationDbContext>(new MigrateDatabaseToLatestVersion<ApplicationDbContext, Configuration>());
         }
 
         public static ApplicationDbContext Create()

@@ -47,9 +47,10 @@ namespace SeoPoc.Web.Services
 
                         return (section: string.Join("-", seoParameterTypeString.Take(seoParameterTypeString.Length - 1)), type: seoParameterType);
                     })
+                .Where(x => x.type != SeoParameterType.Unknown)
                 .ToArray();
 
-            if (segments.All(x => x.type == SeoParameterType.Unknown))
+            if (segments.Length == 0 || segments.All(x => x.type == SeoParameterType.Unknown))
             {
                 return new RouteResult
                 {
@@ -93,7 +94,8 @@ namespace SeoPoc.Web.Services
             }
 
             var seoParams = new[] { "Снять квартиру", citySeoParameter?.Value, districtSeoParameter?.Value }
-                .Select(x => !string.IsNullOrEmpty(x)).ToArray();
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToArray();
 
             var result = new RouteResult();
 
