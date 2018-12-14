@@ -198,6 +198,8 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SeoController.cs" />
     <Compile Include="DataAccess\ApplicationDbContext.cs" />
+    <Compile Include="DataAccess\Entities\DbCitySeoParameter.cs" />
+    <Compile Include="DataAccess\Entities\DbDistrictSeoParameter.cs" />
     <Compile Include="DataAccess\Entities\DbCity.cs" />
     <Compile Include="DataAccess\Entities\DbDistrict.cs" />
     <Compile Include="DataAccess\Entities\DbSeoUrlAlias.cs" />
@@ -211,11 +213,22 @@
     <Compile Include="Migrations\201812120806260_0001_Initial.Designer.cs">
       <DependentUpon>201812120806260_0001_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201812140936248_0001_CityDistrict.cs" />
+    <Compile Include="Migrations\201812140936248_0001_CityDistrict.Designer.cs">
+      <DependentUpon>201812140936248_0001_CityDistrict.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812141018293_0002_SeoParams.cs" />
+    <Compile Include="Migrations\201812141018293_0002_SeoParams.Designer.cs">
+      <DependentUpon>201812141018293_0002_SeoParams.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Modules\SeoModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\RouteResult.cs" />
+    <Compile Include="Services\SeoRoutingService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +309,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201812120806260_0001_Initial.resx">
       <DependentUpon>201812120806260_0001_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812140936248_0001_CityDistrict.resx">
+      <DependentUpon>201812140936248_0001_CityDistrict.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812141018293_0002_SeoParams.resx">
+      <DependentUpon>201812141018293_0002_SeoParams.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

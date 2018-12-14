@@ -16,6 +16,7 @@ namespace SeoPoc.Web.DataAccess
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer<ApplicationDbContext>(new DropCreateDatabaseAlways<ApplicationDbContext>());
         }
 
         public static ApplicationDbContext Create()
@@ -29,6 +30,9 @@ namespace SeoPoc.Web.DataAccess
 
             modelBuilder.Entity<DbCity>();
             modelBuilder.Entity<DbDistrict>();
+
+            modelBuilder.Entity<DbCitySeoParameter>();
+            modelBuilder.Entity<DbDistrictSeoParameter>();
 
             modelBuilder.Entity<DbSeoUrlAlias>();
         }

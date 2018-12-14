@@ -7,7 +7,7 @@ namespace SeoPoc.Web.DataAccess.Entities
 {
     public interface ISeoParameter
     {
-        string PlaceholderName { get; set; }
+        //string PlaceholderName { get; set; }
 
         string SeoParameterValuesJson { get; set; }
     }

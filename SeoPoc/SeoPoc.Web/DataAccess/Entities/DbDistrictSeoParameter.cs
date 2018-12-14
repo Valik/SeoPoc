@@ -7,20 +7,22 @@ using System.Web;
 
 namespace SeoPoc.Web.DataAccess.Entities
 {
-    [Table("dbo.City")]
-    public class DbCity
+    [Table("dbo.DistrictSeoParameter")]
+    public class DbDistrictSeoParameter
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [MaxLength(256)]
-        public string Name { get; set; }
+        public string Value { get; set; }
 
-        [InverseProperty("City")]
-        public virtual ICollection<DbDistrict> Districts { get; set; }
+        [MaxLength(256)]
+        public string Alias { get; set; }
 
-        [InverseProperty("City")]
-        public virtual ICollection<DbCitySeoParameter> SeoParameters { get; set; }
+        public int DistrictId { get; set; }
+
+        [ForeignKey("DistrictId")]
+        public virtual DbDistrict District { get; set; }
     }
 }
