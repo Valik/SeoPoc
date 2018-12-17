@@ -21,7 +21,7 @@ namespace SeoPoc.Web.Modules
             var service = new SeoRoutingService();
 
             var result = service.Route(httpContext.Request.Url);
-            if (string.IsNullOrEmpty(result.SeoTitle))
+            if (result == null)
             {
                 return;
             }

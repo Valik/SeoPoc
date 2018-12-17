@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
 
@@ -29,13 +30,16 @@ namespace SeoPoc.Web.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
             modelBuilder.Entity<DbCity>();
             modelBuilder.Entity<DbDistrict>();
 
             modelBuilder.Entity<DbCitySeoParameter>();
             modelBuilder.Entity<DbDistrictSeoParameter>();
-
-            modelBuilder.Entity<DbSeoUrlAlias>();
+            modelBuilder.Entity<DbArticleGroupSeoParameter>();
+            modelBuilder.Entity<DbAliasSeoParameter>();
+            modelBuilder.Entity<DbPhraseSeoParameter>();
         }
     }
 }

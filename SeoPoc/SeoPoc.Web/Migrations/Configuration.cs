@@ -1,17 +1,15 @@
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 
 using Newtonsoft.Json;
 
 using SeoPoc.Web.DataAccess.Entities;
 using SeoPoc.Web.DataAccess.JsonEntities;
 
+using WebGrease.Css.Extensions;
+
 namespace SeoPoc.Web.Migrations
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Migrations;
-    using System.Linq;
-
     internal sealed class Configuration : DbMigrationsConfiguration<SeoPoc.Web.DataAccess.ApplicationDbContext>
     {
         public Configuration()
@@ -21,6 +19,11 @@ namespace SeoPoc.Web.Migrations
 
         protected override void Seed(SeoPoc.Web.DataAccess.ApplicationDbContext context)
         {
+            //if (System.Diagnostics.Debugger.IsAttached == false)
+            //{
+            //    System.Diagnostics.Debugger.Launch();
+            //}
+
             var spbDistricts = new[]
             {
                 new DbDistrict
@@ -74,7 +77,7 @@ namespace SeoPoc.Web.Migrations
                         Alias = "Sankt-Peterburge"
                     },
                 },
-                Districts = spbDistricts,
+                //Districts = spbDistricts,
             };
 
             var nskDistricts = new[]
@@ -130,77 +133,100 @@ namespace SeoPoc.Web.Migrations
                         Alias = "Novosibirske"
                     },
                 },
-                Districts = nskDistricts,
+                //Districts = nskDistricts,
             };
 
             var cities = new [] { spb, nsk };
             context.Set<DbCity>().AddRange(cities);
-
             context.SaveChanges();
 
-            //var titles = new List<DbSeoUrlAlias>();
+            spbDistricts.ForEach(x =>
+            {
+                x.CityId = spb.Id;
+                x.SeoParameters.ForEach(y => y.CityId = spb.Id);
+            });
+            nskDistricts.ForEach(x =>
+            {
+                x.CityId = nsk.Id;
+                x.SeoParameters.ForEach(y => y.CityId = nsk.Id);
+            });
 
-            //foreach (var city in cities)
-            //{
-            //    city.Districts.SelectMany(
-            //        x => SelectSeoUrlAliases(city, x));
+            context.Set<DbDistrict>().AddRange(spbDistricts);
+            context.Set<DbDistrict>().AddRange(nskDistricts);
+            context.SaveChanges();
 
+            var articleGroups = new[]
+            {
+                new DbArticleGroupSeoParameter
+                {
+                    ArticleGroupInternalName = "1k",
+                    Alias = "1k",
+                    Value = "сн€ть квартиру",
+                },
+                new DbArticleGroupSeoParameter
+                {
+                    ArticleGroupInternalName = "1k",
+                    Alias = "1k-rent",
+                    Value = "сн€ть 1-комнатную квартиру",
+                },
+                new DbArticleGroupSeoParameter
+                {
+                    ArticleGroupInternalName = "K",
+                    Alias = "k-rent",
+                    Value = "сн€ть комнату",
+                },
+            };
+            context.Set<DbArticleGroupSeoParameter>().AddRange(articleGroups);
 
-            //}
-            //  This method will be called after migrating to the latest version.
+            var aliases = new[]
+            {
+                new DbAliasSeoParameter
+                {
+                    City = spb,
+                    PriceTo = 10000,
+                    Alias = "spb-cheep-room",
+                    ArticleGroupInternalName = "K",
+                    Value = "сн€ть комнату —ѕб недорого",
+                },
+                new DbAliasSeoParameter
+                {
+                    City = spb,
+                    PriceFrom = 10000,
+                    Alias = "spb-room-10000",
+                    ArticleGroupInternalName = "K",
+                    Value = "сн€ть комнату —ѕб недорого",
+                },
+                new DbAliasSeoParameter
+                {
+                    City = spb,
+                    PriceTo = 12000,
+                    Alias = "nsk-cheep-room",
+                    ArticleGroupInternalName = "K",
+                    Value = "сн€ть квартиру Ќовосибирск недорого",
+                },
+            };
+            context.Set<DbAliasSeoParameter>().AddRange(aliases);
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            var phrases = new[]
+            {
+                new DbPhraseSeoParameter
+                {
+                    Alias = "wo-middlemans",
+                    Value = "без посредников",
+                },
+                new DbPhraseSeoParameter
+                {
+                    Alias = "by-owner",
+                    Value = "от собственника",
+                },
+                new DbPhraseSeoParameter
+                {
+                    Alias = "wo-agents",
+                    Value = "без агента",
+                },
+            };
+            context.Set<DbPhraseSeoParameter>().AddRange(phrases);
+            context.SaveChanges();
         }
-
-        //private static IEnumerable<DbSeoUrlAlias> SelectSeoUrlAliases(DbCity city, DbDistrict district)
-        //{
-            //var titleFormat1 = $"сн€ть квартиру {{{city.PlaceholderName}}} {{{district.PlaceholderName}}}";
-            //var titleFormat2 = $"сн€ть квартиру {{{city.PlaceholderName}}}";
-            //var titleFormat3 = $"сн€ть квартиру {{{district.PlaceholderName}}}";
-
-            //var cityValues = JsonConvert.DeserializeObject<SeoParameterValuesJson>(city.SeoParameterValuesJson)
-            //    .Values;
-
-            //var districtValues = JsonConvert.DeserializeObject<SeoParameterValuesJson>(district.SeoParameterValuesJson)
-            //    .Values;
-
-            //var result = new List<DbSeoUrlAlias>();
-
-            //cityValues.Select(
-            //    x =>
-            //    {
-                    
-            //    });
-
-
-
-            //yield return JsonConvert.DeserializeObject<SeoParameterValuesJson>(district.SeoParameterValuesJson)
-            //    .Values
-            //    .SelectMany(x => new [] {
-            //        $"сн€ть квартиру {x.Value}"
-
-            //    })
-
-
-            //return new[]
-            //{
-            //    new DbSeoUrlAlias
-            //    {
-            //        CityId = city.Id,
-            //        DistrictId = x.Id,
-            //        TitleFormat = ""
-            //    },
-
-            //};
-        //}
     }
 }

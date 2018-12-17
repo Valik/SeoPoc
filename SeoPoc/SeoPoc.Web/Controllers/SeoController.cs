@@ -12,7 +12,7 @@ namespace SeoPoc.Web.Controllers
     {
         public ActionResult Index()
         {
-            var seoRoutingResult = HttpContext.Items["HTTPCONTEXT:SEOROUTING:RESULT"] as RouteResult;
+            var seoRoutingResult = HttpContext.Items["HTTPCONTEXT:SEOROUTING:RESULT"] as SeoRoutingResult;
 
             return View(seoRoutingResult);
         }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using SeoPoc.Web.Services;
 
 namespace SeoPoc.Web.DataAccess.Entities
 {
     public interface ISeoParameter
     {
-        //string PlaceholderName { get; set; }
+        string Value { get; set; }
 
-        string SeoParameterValuesJson { get; set; }
+        string Alias { get; set; }
+
+        void UpdateRoutingResult(SeoRoutingResult routingResult);
     }
 }

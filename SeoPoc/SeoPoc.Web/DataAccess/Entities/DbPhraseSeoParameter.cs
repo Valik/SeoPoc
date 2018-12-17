@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 using SeoPoc.Web.Services;
 
 namespace SeoPoc.Web.DataAccess.Entities
 {
-    [Table("dbo.CitySeoParameter")]
-    public class DbCitySeoParameter : ISeoParameter
+    [Table("dbo.PhraseSeoParameter")]
+    public class DbPhraseSeoParameter : ISeoParameter
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,14 +18,8 @@ namespace SeoPoc.Web.DataAccess.Entities
         [MaxLength(256)]
         public string Alias { get; set; }
 
-        public int CityId { get; set; }
-
-        [ForeignKey("CityId")]
-        public virtual DbCity City { get; set; }
-
         public void UpdateRoutingResult(SeoRoutingResult routingResult)
         {
-            routingResult.CityId = CityId;
         }
     }
 }

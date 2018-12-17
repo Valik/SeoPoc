@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 
 using SeoPoc.Web.DataAccess;
 using SeoPoc.Web.DataAccess.Entities;
@@ -17,16 +15,33 @@ namespace SeoPoc.Web.Services
             Unknown,
             City,
             District,
+            ArticleGroup,
+            Phrase,
+            Alias,
         }
 
-        public RouteResult Route(Uri currentUrl)
-        {
-            var seoParameterTypes = 
-                Enum.GetValues(typeof(SeoParameterType))
-                    .Cast<SeoParameterType>()
-                    .Select(x => (x.ToString(), x))
-                    .ToDictionary(x => x.Item1, x => x.Item2, StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, SeoParameterType> SeoParameterTypes = Enum.GetValues(typeof(SeoParameterType))
+            .Cast<SeoParameterType>()
+            .Select(x => (x.ToString(), x))
+            .ToDictionary(x => x.Item1, x => x.Item2, StringComparer.InvariantCultureIgnoreCase);
 
+
+        private readonly Dictionary<SeoParameterType, Func<ApplicationDbContext, DbSet<ISeoParameter>>> DbSets = new Dictionary<SeoParameterType, Func<ApplicationDbContext, DbSet<ISeoParameter>>>
+        {
+            [SeoParameterType.City] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbCitySeoParameter>(),
+            [SeoParameterType.District] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbDistrictSeoParameter>(),
+            [SeoParameterType.ArticleGroup] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbArticleGroupSeoParameter>(),
+            [SeoParameterType.Phrase] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbPhraseSeoParameter>(),
+            [SeoParameterType.Alias] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbAliasSeoParameter>(),
+        };
+
+        private static Func<ApplicationDbContext, IQueryable<T>> GetDbSet<T>() where T : class, ISeoParameter
+        {
+            return context => context.Set<T>();
+        }
+
+        public SeoRoutingResult Route(Uri currentUrl)
+        {
             var segments = currentUrl
                 .Segments
                 .Select(x => x.Trim('/'))
@@ -40,7 +55,7 @@ namespace SeoPoc.Web.Services
                             return (section: x, type: SeoParameterType.Unknown);
                         }
 
-                        if (!seoParameterTypes.TryGetValue(seoParameterTypeString[seoParameterTypeString.Length - 1], out var seoParameterType))
+                        if (!SeoParameterTypes.TryGetValue(seoParameterTypeString[seoParameterTypeString.Length - 1], out var seoParameterType))
                         {
                             return (section: x, type: SeoParameterType.Unknown);
                         }
@@ -52,56 +67,30 @@ namespace SeoPoc.Web.Services
 
             if (segments.Length == 0 || segments.All(x => x.type == SeoParameterType.Unknown))
             {
-                return new RouteResult
-                {
-                };
+                return null;
             }
 
-            DbCitySeoParameter citySeoParameter = null;
-            DbDistrictSeoParameter districtSeoParameter = null;
+            var result = new SeoRoutingResult();
+            var titleSegments = new List<string>(segments.Length);
 
             foreach (var segment in segments)
             {
-                switch (segment.type)
+                using (var context = new ApplicationDbContext())
                 {
-                    case SeoParameterType.City:
-                        using (var context = new ApplicationDbContext())
-                        {
-                            citySeoParameter = context.Set<DbCitySeoParameter>()
-                                .FirstOrDefault(x => x.Alias == segment.section);
-                        }
-                        break;
+                    var seoParameter = DbSets[segment.type](context)
+                        .FirstOrDefault(x => x.Alias == segment.section);
 
-                    case SeoParameterType.District:
-                        using (var context = new ApplicationDbContext())
-                        {
-                            var query = context.Set<DbDistrictSeoParameter>()
-                                .Include(x => x.District)
-                                .Where(x => x.Alias == segment.section);
+                    if (seoParameter == null)
+                    {
+                        continue;
+                    }
 
-                            if (citySeoParameter != null)
-                            {
-                                query = query.Where(x => x.District.CityId == citySeoParameter.CityId);
-                            }
-
-                            districtSeoParameter = query.FirstOrDefault();
-                        }
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    seoParameter.UpdateRoutingResult(result);
+                    titleSegments.Add(seoParameter.Value);
                 }
             }
 
-            var seoParams = new[] { "Снять квартиру", citySeoParameter?.Value, districtSeoParameter?.Value }
-                .Where(x => !string.IsNullOrEmpty(x))
-                .ToArray();
-
-            var result = new RouteResult();
-
-            result.SeoTitle = string.Join(" ", seoParams);
-            result.CityId = citySeoParameter?.CityId ?? districtSeoParameter?.District.CityId;
-            result.DistrictId = districtSeoParameter?.DistrictId;
+            result.SeoTitle = string.Join(" ", titleSegments);
 
             return result;
         }
