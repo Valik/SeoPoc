@@ -26,13 +26,13 @@ namespace SeoPoc.Web.Services
             .ToDictionary(x => x.Item1, x => x.Item2, StringComparer.InvariantCultureIgnoreCase);
 
 
-        private readonly Dictionary<SeoParameterType, Func<ApplicationDbContext, DbSet<ISeoParameter>>> DbSets = new Dictionary<SeoParameterType, Func<ApplicationDbContext, DbSet<ISeoParameter>>>
+        private readonly Dictionary<SeoParameterType, Func<ApplicationDbContext, IQueryable<ISeoParameter>>> DbSets = new Dictionary<SeoParameterType, Func<ApplicationDbContext, IQueryable<ISeoParameter>>>
         {
-            [SeoParameterType.City] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbCitySeoParameter>(),
-            [SeoParameterType.District] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbDistrictSeoParameter>(),
-            [SeoParameterType.ArticleGroup] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbArticleGroupSeoParameter>(),
-            [SeoParameterType.Phrase] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbPhraseSeoParameter>(),
-            [SeoParameterType.Alias] = (Func<ApplicationDbContext, DbSet<ISeoParameter>>)GetDbSet<DbAliasSeoParameter>(),
+            [SeoParameterType.City] = GetDbSet<DbCitySeoParameter>(),
+            [SeoParameterType.District] = GetDbSet<DbDistrictSeoParameter>(),
+            [SeoParameterType.ArticleGroup] = GetDbSet<DbArticleGroupSeoParameter>(),
+            [SeoParameterType.Phrase] = GetDbSet<DbPhraseSeoParameter>(),
+            [SeoParameterType.Alias] = GetDbSet<DbAliasSeoParameter>(),
         };
 
         private static Func<ApplicationDbContext, IQueryable<T>> GetDbSet<T>() where T : class, ISeoParameter
