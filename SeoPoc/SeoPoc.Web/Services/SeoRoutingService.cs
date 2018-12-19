@@ -5,21 +5,12 @@ using System.Linq;
 
 using SeoPoc.Web.DataAccess;
 using SeoPoc.Web.DataAccess.Entities;
+using SeoPoc.Web.Models;
 
 namespace SeoPoc.Web.Services
 {
     public class SeoRoutingService
     {
-        private enum SeoParameterType
-        {
-            Unknown,
-            City,
-            District,
-            ArticleGroup,
-            Phrase,
-            Alias,
-        }
-
         private readonly Dictionary<string, SeoParameterType> SeoParameterTypes = Enum.GetValues(typeof(SeoParameterType))
             .Cast<SeoParameterType>()
             .Select(x => (x.ToString(), x))
@@ -73,11 +64,12 @@ namespace SeoPoc.Web.Services
             var result = new SeoRoutingResult();
             var titleSegments = new List<string>(segments.Length);
 
-            foreach (var segment in segments)
+            using (var context = new ApplicationDbContext())
             {
-                using (var context = new ApplicationDbContext())
+                foreach (var segment in segments)
                 {
                     var seoParameter = DbSets[segment.type](context)
+                        .AsNoTracking()
                         .FirstOrDefault(x => x.Alias == segment.section);
 
                     if (seoParameter == null)

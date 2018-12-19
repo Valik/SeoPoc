@@ -27,9 +27,13 @@ namespace SeoPoc.Web.DataAccess.Entities
         [ForeignKey("CityId")]
         public virtual DbCity City { get; set; }
 
-        public void UpdateRoutingResult(SeoRoutingResult routingResult)
+        public bool UpdateRoutingResult(SeoRoutingResult routingResult)
         {
+            var result = routingResult.CityId.HasValue && CityId != routingResult.CityId;
+
             routingResult.CityId = CityId;
+
+            return result;
         }
     }
 }

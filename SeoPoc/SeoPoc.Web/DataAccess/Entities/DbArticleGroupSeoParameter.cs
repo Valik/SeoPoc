@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using SeoPoc.Web.Services;
@@ -21,9 +22,15 @@ namespace SeoPoc.Web.DataAccess.Entities
         [MaxLength(256)]
         public string ArticleGroupInternalName { get; set; }
 
-        public void UpdateRoutingResult(SeoRoutingResult routingResult)
+        public bool UpdateRoutingResult(SeoRoutingResult routingResult)
         {
+            var result = 
+                !string.IsNullOrEmpty(routingResult.ArticleGroupInternalName) &&
+                !routingResult.ArticleGroupInternalName.Equals(ArticleGroupInternalName, StringComparison.InvariantCultureIgnoreCase);
+
             routingResult.ArticleGroupInternalName = ArticleGroupInternalName;
+
+            return result;
         }
     }
 }

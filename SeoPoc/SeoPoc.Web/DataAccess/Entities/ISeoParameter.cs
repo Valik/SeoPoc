@@ -8,6 +8,6 @@ namespace SeoPoc.Web.DataAccess.Entities
 
         string Alias { get; set; }
 
-        void UpdateRoutingResult(SeoRoutingResult routingResult);
+        bool UpdateRoutingResult(SeoRoutingResult routingResult);
     }
 }

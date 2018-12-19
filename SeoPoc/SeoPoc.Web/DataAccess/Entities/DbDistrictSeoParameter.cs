@@ -32,10 +32,16 @@ namespace SeoPoc.Web.DataAccess.Entities
         [ForeignKey("DistrictId")]
         public virtual DbDistrict District { get; set; }
 
-        public void UpdateRoutingResult(SeoRoutingResult routingResult)
+        public bool UpdateRoutingResult(SeoRoutingResult routingResult)
         {
+            bool result =
+                routingResult.CityId.HasValue && CityId != routingResult.CityId ||
+                routingResult.DistrictId.HasValue && DistrictId != routingResult.DistrictId;
+
             routingResult.CityId = CityId;
             routingResult.DistrictId = DistrictId;
+
+            return result;
         }
     }
 }

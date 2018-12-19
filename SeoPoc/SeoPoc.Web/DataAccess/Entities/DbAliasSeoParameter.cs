@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using SeoPoc.Web.Services;
@@ -35,14 +36,24 @@ namespace SeoPoc.Web.DataAccess.Entities
         [ForeignKey("DistrictId")]
         public virtual DbDistrict District { get; set; }
 
-        public void UpdateRoutingResult(SeoRoutingResult routingResult)
+        public bool UpdateRoutingResult(SeoRoutingResult routingResult)
         {
+            bool result =
+                routingResult.CityId.HasValue && CityId != routingResult.CityId ||
+                routingResult.DistrictId.HasValue && DistrictId != routingResult.DistrictId ||
+                routingResult.PriceFrom.HasValue && PriceFrom != routingResult.PriceFrom ||
+                routingResult.PriceTo.HasValue && PriceTo != routingResult.PriceTo ||
+                !string.IsNullOrEmpty(routingResult.SeoTitle) && !routingResult.SeoTitle.Equals(Value, StringComparison.InvariantCultureIgnoreCase) ||
+                !string.IsNullOrEmpty(routingResult.ArticleGroupInternalName) && !routingResult.ArticleGroupInternalName.Equals(ArticleGroupInternalName, StringComparison.InvariantCultureIgnoreCase);
+
             routingResult.CityId = CityId;
             routingResult.DistrictId = DistrictId;
             routingResult.ArticleGroupInternalName = ArticleGroupInternalName;
             routingResult.PriceFrom = PriceFrom;
             routingResult.PriceTo = PriceTo;
             routingResult.SeoTitle = Value;
+
+            return result;
         }
     }
 }

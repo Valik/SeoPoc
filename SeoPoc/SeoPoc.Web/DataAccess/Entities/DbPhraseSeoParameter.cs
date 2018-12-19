@@ -18,8 +18,9 @@ namespace SeoPoc.Web.DataAccess.Entities
         [MaxLength(256)]
         public string Alias { get; set; }
 
-        public void UpdateRoutingResult(SeoRoutingResult routingResult)
+        public bool UpdateRoutingResult(SeoRoutingResult routingResult)
         {
+            return false;
         }
     }
 }
