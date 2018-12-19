@@ -92,6 +92,8 @@ namespace SeoPoc.Web.Services
             var result = new List<SiteMapNode>();
             foreach (var combination in combinations)
             {
+                var nodePriority = string.Format("{0:0.0}", (0.5 + ((.5 / 4) * combination.Length)));
+
                 foreach (var placement in Placements(combination))
                 {
                     var node = new SiteMapNode();
@@ -100,10 +102,12 @@ namespace SeoPoc.Web.Services
 
                     node.Loc = "/" + url;
                     node.LastModified = DateTime.Now.ToString("YYYY-MM-dd", CultureInfo.InvariantCulture);
-                    node.Priority = string.Format("{0:0.0}", (0.5 + (.5 / 4 * placement.Length)));
+                    node.Priority = nodePriority;
                     node.ChangeFrequency = "hourly";
 
                     node.SeaTitle = seoTitle;
+
+                    result.Add(node);
                 }
             }
 
