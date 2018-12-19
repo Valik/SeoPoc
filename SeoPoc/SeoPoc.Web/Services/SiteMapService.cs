@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
-using System.Web;
+using System.Xml.Linq;
 
 using SeoPoc.Web.DataAccess;
 using SeoPoc.Web.DataAccess.Entities;
@@ -43,9 +43,9 @@ namespace SeoPoc.Web.Services
             return context => context.Set<T>();
         }
 
-        private class SiteMapNode
+        public class SiteMapNode
         {
-            public string Loc { get; set; }
+            public string Location { get; set; }
 
             public string LastModified { get; set; }
 
@@ -56,13 +56,31 @@ namespace SeoPoc.Web.Services
             public string SeaTitle { get; set; }
         }
 
-
         public string GetSiteMap()
         {
-            throw new NotImplementedException();
+            XNamespace xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
+            XElement root = new XElement(xmlns + "urlset");
+
+            var nodes = GetNodes().ToArray();
+
+            foreach (var sitemapNode in nodes)
+            {
+                XElement urlElement = new XElement(
+                    xmlns + "url",
+                    new XElement(xmlns + "loc", Uri.EscapeUriString(sitemapNode.Location)),
+                    new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemapNode.LastModified)),
+                    new XElement(xmlns + "changefreq", Uri.EscapeUriString(sitemapNode.ChangeFrequency)),
+                    new XElement(xmlns + "priority", Uri.EscapeUriString(sitemapNode.Priority)),
+                    new XElement(xmlns + "seatitle", sitemapNode.SeaTitle)
+                    );
+                root.Add(urlElement);
+            }
+
+            XDocument document = new XDocument(root);
+            return document.ToString(SaveOptions.DisableFormatting);
         }
 
-        private SiteMapNode[] GetNodes()
+        public IEnumerable<SiteMapNode> GetNodes()
         {
             var formats = new[]
             {
@@ -89,7 +107,8 @@ namespace SeoPoc.Web.Services
                 })
                 .ToArray();
 
-            var result = new List<SiteMapNode>();
+            var now = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
             foreach (var combination in combinations)
             {
                 var nodePriority = string.Format("{0:0.0}", (0.5 + ((.5 / 4) * combination.Length)));
@@ -100,18 +119,16 @@ namespace SeoPoc.Web.Services
                     var seoTitle = string.Join(" ", placement.Select(x => x.seoParameter.Value));
                     var url = string.Join("/", placement.Select(x => x.seoParameter.Alias + "-" + UrlSectionPostfixes[x.seoParameterType]));
 
-                    node.Loc = "/" + url;
-                    node.LastModified = DateTime.Now.ToString("YYYY-MM-dd", CultureInfo.InvariantCulture);
+                    node.Location = "/" + url;
+                    node.LastModified = now;
                     node.Priority = nodePriority;
                     node.ChangeFrequency = "hourly";
 
                     node.SeaTitle = seoTitle;
 
-                    result.Add(node);
+                    yield return node;
                 }
             }
-
-            return result.ToArray();
         }
 
         private IEnumerable<(SeoParameterType seoParameterType, ISeoParameter seoParameter)[]> Placements((SeoParameterType seoParameterType, ISeoParameter[] dataSet)[] combination)

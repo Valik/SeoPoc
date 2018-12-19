@@ -194,7 +194,7 @@ namespace SeoPoc.Web.Migrations
                     PriceFrom = 10000,
                     Alias = "spb-room-10000",
                     ArticleGroupInternalName = "K",
-                    Value = "сн€ть комнату —ѕб недорого",
+                    Value = "сн€ть комнату —ѕб от 10000",
                 },
                 new DbAliasSeoParameter
                 {
