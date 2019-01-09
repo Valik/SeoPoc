@@ -15,11 +15,6 @@ namespace SeoPoc.Web.Services
     {
         private static readonly string[] ArticleGroupNames = { "1k", "2k", "3k", "K", "C", "1k,K", "1k,C", "1k,2k", "2k,3k", };
 
-        private readonly Dictionary<string, SeoParameterType> SeoParameterTypes = Enum.GetValues(typeof(SeoParameterType))
-            .Cast<SeoParameterType>()
-            .Select(x => (x.ToString(), x))
-            .ToDictionary(x => x.Item1, x => x.Item2, StringComparer.InvariantCultureIgnoreCase);
-
         private readonly Dictionary<SeoParameterType, Func<ApplicationDbContext, string, int, IQueryable<ISeoParameter>>> DbSets = new Dictionary<SeoParameterType, Func<ApplicationDbContext, string, int, IQueryable<ISeoParameter>>>
         {
             [SeoParameterType.City] = (context, articleGroupName, cityId) => GetDbSet<DbCitySeoParameter>()(context).Where(x => x.CityId == cityId),
@@ -39,11 +34,6 @@ namespace SeoPoc.Web.Services
         };
 
         private static Func<ApplicationDbContext, IQueryable<T>> GetDbSet<T>() where T : class, ISeoParameter
-        {
-            return context => context.Set<T>();
-        }
-
-        private static Func<ApplicationDbContext, IQueryable<T>> GetDbSet<T>(string articleGroupName, string city) where T : class, ISeoParameter
         {
             return context => context.Set<T>();
         }
@@ -73,7 +63,7 @@ namespace SeoPoc.Web.Services
                 XElement urlElement = new XElement(
                     xmlns + "sitemap",
                     new XElement(xmlns + "loc", Uri.EscapeUriString(sitemap.url.ToString())),
-                    new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("YYYY-MM-dd")))
+                    new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("yyyy-MM-dd")))
                 );
                 root.Add(urlElement);
             }
