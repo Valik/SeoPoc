@@ -17,6 +17,9 @@ namespace SeoPoc.Web.DataAccess.Entities
         [MaxLength(256)]
         public string Name { get; set; }
 
+        [MaxLength(256)]
+        public string InternalName { get; set; }
+
         [InverseProperty("City")]
         public virtual ICollection<DbDistrict> Districts { get; set; }
 

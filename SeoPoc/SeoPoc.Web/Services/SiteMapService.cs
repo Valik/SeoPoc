@@ -56,6 +56,55 @@ namespace SeoPoc.Web.Services
             public string SeaTitle { get; set; }
         }
 
+        public string GetSiteMapIndex()
+        {
+            XNamespace xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
+            XElement root = new XElement(xmlns + "sitemapindex");
+
+            var nodes = GetSiteMaps();
+
+            foreach (var sitemap in nodes)
+            {
+                XElement urlElement = new XElement(
+                    xmlns + "sitemap",
+                    new XElement(xmlns + "loc", Uri.EscapeUriString(sitemap.url.ToString())),
+                    new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("YYYY-MM-dd")))
+                );
+                root.Add(urlElement);
+            }
+
+            XDocument document = new XDocument(root);
+            return document.ToString(SaveOptions.DisableFormatting);
+        }
+
+        public (Uri url, DateTime lastModifiedDate)[] GetSiteMaps()
+        {
+            string[] articleGroupNames = { "1k", "2k", "3k", "K", "C", "1k,K", "1k,C", "1k,2k", "2k,3k", };
+            string[] cities;
+
+            using (var context = new ApplicationDbContext())
+            {
+                cities = context.Set<DbCity>()
+                    .Select(x => x.InternalName)
+                    .ToArray();
+            }
+
+            var urlSections = articleGroupNames
+                .SelectMany(x => cities.Select(y => (x, y)))
+                .ToArray();
+
+            var baseUri = new Uri("https://example.com");
+            var now = DateTime.Now;
+
+            var result = urlSections
+                .Select(x => (
+                    url: new Uri(baseUri, string.Join("/", x)),
+                    lastModifiedDate: now
+                ))
+                .ToArray();
+            return result;
+        }
+
         public string GetSiteMap()
         {
             XNamespace xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
