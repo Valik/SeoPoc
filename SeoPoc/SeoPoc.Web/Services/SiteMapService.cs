@@ -13,21 +13,21 @@ namespace SeoPoc.Web.Services
 {
     public class SiteMapService
     {
+        private static readonly string[] ArticleGroupNames = { "1k", "2k", "3k", "K", "C", "1k,K", "1k,C", "1k,2k", "2k,3k", };
+
         private readonly Dictionary<string, SeoParameterType> SeoParameterTypes = Enum.GetValues(typeof(SeoParameterType))
             .Cast<SeoParameterType>()
             .Select(x => (x.ToString(), x))
             .ToDictionary(x => x.Item1, x => x.Item2, StringComparer.InvariantCultureIgnoreCase);
 
-
-        private readonly Dictionary<SeoParameterType, Func<ApplicationDbContext, IQueryable<ISeoParameter>>> DbSets = new Dictionary<SeoParameterType, Func<ApplicationDbContext, IQueryable<ISeoParameter>>>
+        private readonly Dictionary<SeoParameterType, Func<ApplicationDbContext, string, int, IQueryable<ISeoParameter>>> DbSets = new Dictionary<SeoParameterType, Func<ApplicationDbContext, string, int, IQueryable<ISeoParameter>>>
         {
-            [SeoParameterType.City] = GetDbSet<DbCitySeoParameter>(),
-            [SeoParameterType.District] = GetDbSet<DbDistrictSeoParameter>(),
-            [SeoParameterType.ArticleGroup] = GetDbSet<DbArticleGroupSeoParameter>(),
-            [SeoParameterType.Phrase] = GetDbSet<DbPhraseSeoParameter>(),
-            [SeoParameterType.Alias] = GetDbSet<DbAliasSeoParameter>(),
+            [SeoParameterType.City] = (context, articleGroupName, cityId) => GetDbSet<DbCitySeoParameter>()(context).Where(x => x.CityId == cityId),
+            [SeoParameterType.District] = (context, articleGroupName, cityId) => GetDbSet<DbDistrictSeoParameter>()(context).Where(x => x.CityId == cityId),
+            [SeoParameterType.ArticleGroup] = (context, articleGroupName, cityId) => GetDbSet<DbArticleGroupSeoParameter>()(context).Where(x => x.ArticleGroupInternalName == articleGroupName),
+            [SeoParameterType.Phrase] = (context, articleGroupName, cityId) => GetDbSet<DbPhraseSeoParameter>()(context),
+            [SeoParameterType.Alias] = (context, articleGroupName, cityId) => GetDbSet<DbAliasSeoParameter>()(context).Where(x => (x.CityId == null || x.CityId == cityId) && (x.ArticleGroupInternalName == null || x.ArticleGroupInternalName == articleGroupName)),
         };
-
 
         private readonly Dictionary<SeoParameterType, string> UrlSectionPostfixes = new Dictionary<SeoParameterType, string>
         {
@@ -39,6 +39,11 @@ namespace SeoPoc.Web.Services
         };
 
         private static Func<ApplicationDbContext, IQueryable<T>> GetDbSet<T>() where T : class, ISeoParameter
+        {
+            return context => context.Set<T>();
+        }
+
+        private static Func<ApplicationDbContext, IQueryable<T>> GetDbSet<T>(string articleGroupName, string city) where T : class, ISeoParameter
         {
             return context => context.Set<T>();
         }
@@ -79,7 +84,6 @@ namespace SeoPoc.Web.Services
 
         public (Uri url, DateTime lastModifiedDate)[] GetSiteMaps()
         {
-            string[] articleGroupNames = { "1k", "2k", "3k", "K", "C", "1k,K", "1k,C", "1k,2k", "2k,3k", };
             string[] cities;
 
             using (var context = new ApplicationDbContext())
@@ -89,7 +93,8 @@ namespace SeoPoc.Web.Services
                     .ToArray();
             }
 
-            var urlSections = articleGroupNames
+            var urlSections = ArticleGroupNames
+                .Select(ToUrlSection)
                 .SelectMany(x => cities.Select(y => (x, y)))
                 .ToArray();
 
@@ -98,19 +103,29 @@ namespace SeoPoc.Web.Services
 
             var result = urlSections
                 .Select(x => (
-                    url: new Uri(baseUri, string.Join("/", x)),
+                    url: new Uri(baseUri, $"/sitemap/{x.Item1}/{x.Item2}.xml"),
                     lastModifiedDate: now
                 ))
                 .ToArray();
             return result;
         }
 
-        public string GetSiteMap()
+        private string ToUrlSection(string articleGroupName)
+        {
+            return articleGroupName.Replace(",", "-");
+        }
+
+        private string ToArticleGroupName(string urlSection)
+        {
+            return urlSection.Replace("-", ",");
+        }
+
+        public string GetSiteMap(string articleGroupUrlSection, string city)
         {
             XNamespace xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
             XElement root = new XElement(xmlns + "urlset");
 
-            var nodes = GetNodes().ToArray();
+            var nodes = GetNodes(articleGroupUrlSection, city).ToArray();
 
             foreach (var sitemapNode in nodes)
             {
@@ -129,7 +144,7 @@ namespace SeoPoc.Web.Services
             return document.ToString(SaveOptions.DisableFormatting);
         }
 
-        public IEnumerable<SiteMapNode> GetNodes()
+        public IEnumerable<SiteMapNode> GetNodes(string articleGroupUrlSection, string city)
         {
             var formats = new[]
             {
@@ -142,10 +157,22 @@ namespace SeoPoc.Web.Services
                 new[] { SeoParameterType.Alias, },
             };
 
+            var cityId = SearchCityId(city);
+            if (!cityId.HasValue)
+            {
+                yield break;
+            }
+
+            var articleGroupName = ToArticleGroupName(articleGroupUrlSection);
+
             Dictionary<SeoParameterType, ISeoParameter[]> dataSets;
             using (var context = new ApplicationDbContext())
             {
-                dataSets = DbSets.Select(x => (x.Key, x.Value(context).AsNoTracking().ToArray()))
+                dataSets = DbSets
+                    .Select(x => (
+                        x.Key,
+                        x.Value(context, articleGroupName, cityId.Value).AsNoTracking().ToArray()
+                    ))
                     .ToDictionary(x => x.Item1, x => x.Item2);
             }
 
@@ -177,6 +204,23 @@ namespace SeoPoc.Web.Services
 
                     yield return node;
                 }
+            }
+        }
+
+        private int? SearchCityId(string city)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var foundCityId = context
+                    .Set<DbCity>()
+                    .Where(x => x.InternalName == city)
+                    .Select(x => (int?)x.Id)
+                    .FirstOrDefault();
+                if (!foundCityId.HasValue)
+                {
+                    return null;
+                }
+                return foundCityId.Value;
             }
         }
 

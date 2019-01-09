@@ -17,9 +17,16 @@ namespace SeoPoc.Web.Controllers
             return View(seoRoutingResult);
         }
 
-        public ActionResult Sitemap()
+        public ActionResult SitemapIndex()
         {
-            var xml = new SiteMapService().GetSiteMap();
+            var xml = new SiteMapService().GetSiteMapIndex();
+            return Content(xml, "text/xml", Encoding.UTF8);
+        }
+
+        [Route("/sitemap/{articleGroup}/{city}.xml", Name = "sitemap")]
+        public ActionResult Sitemap(string articleGroup, string city)
+        {
+            var xml = new SiteMapService().GetSiteMap(articleGroup, city);
             return Content(xml, "text/xml", Encoding.UTF8);
         }
     }

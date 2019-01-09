@@ -14,9 +14,9 @@ namespace SeoPoc.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                name: "sitemap",
-                url: "sitemap.xml",
-                defaults: new { controller = "Seo", action = "Sitemap" }
+                name: "sitemaps",
+                url: "sitemap_index.xml",
+                defaults: new { controller = "Seo", action = "SitemapIndex" }
             );
 
             routes.MapRoute(
