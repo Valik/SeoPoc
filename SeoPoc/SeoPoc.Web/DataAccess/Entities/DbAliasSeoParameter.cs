@@ -55,10 +55,5 @@ namespace SeoPoc.Web.DataAccess.Entities
 
             return result;
         }
-
-        bool ISeoParameter.UpdateRoutingResult(SeoRoutingResult routingResult)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

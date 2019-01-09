@@ -23,7 +23,7 @@ namespace SeoPoc.Web.Controllers
             return Content(xml, "text/xml", Encoding.UTF8);
         }
 
-        [Route("/sitemap/{articleGroup}/{city}.xml", Name = "sitemap")]
+        //[Route("/sitemap/{articleGroup}/{city}", Name = "sitemap")]
         public ActionResult Sitemap(string articleGroup, string city)
         {
             var xml = new SiteMapService().GetSiteMap(articleGroup, city);

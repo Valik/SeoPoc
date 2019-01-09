@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Web;
 using System.Xml.Linq;
 
 using SeoPoc.Web.DataAccess;
@@ -88,16 +90,21 @@ namespace SeoPoc.Web.Services
                 .SelectMany(x => cities.Select(y => (x, y)))
                 .ToArray();
 
-            var baseUri = new Uri("https://example.com");
+            var baseUri = GetBaseUri();
             var now = DateTime.Now;
 
             var result = urlSections
                 .Select(x => (
-                    url: new Uri(baseUri, $"/sitemap/{x.Item1}/{x.Item2}.xml"),
+                    url: new Uri(baseUri, $"/sitemap/{x.Item1}/{x.Item2}"),
                     lastModifiedDate: now
                 ))
                 .ToArray();
             return result;
+        }
+
+        private static Uri GetBaseUri()
+        {
+            return new Uri($"{HttpContext.Current.Request.Url.Scheme}://{HttpContext.Current.Request.Url.Host}:{HttpContext.Current.Request.Url.Port}/");
         }
 
         private string ToUrlSection(string articleGroupName)
@@ -116,12 +123,12 @@ namespace SeoPoc.Web.Services
             XElement root = new XElement(xmlns + "urlset");
 
             var nodes = GetNodes(articleGroupUrlSection, city).ToArray();
-
+            var baseUri = GetBaseUri();
             foreach (var sitemapNode in nodes)
             {
                 XElement urlElement = new XElement(
                     xmlns + "url",
-                    new XElement(xmlns + "loc", Uri.EscapeUriString(sitemapNode.Location)),
+                    new XElement(xmlns + "loc", Uri.EscapeUriString(new Uri(baseUri, sitemapNode.Location).ToString())),
                     new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemapNode.LastModified)),
                     new XElement(xmlns + "changefreq", Uri.EscapeUriString(sitemapNode.ChangeFrequency)),
                     new XElement(xmlns + "priority", Uri.EscapeUriString(sitemapNode.Priority)),

@@ -20,6 +20,13 @@ namespace SeoPoc.Web
             );
 
             routes.MapRoute(
+                "sitemap",
+                "sitemap/{articleGroup}/{city}.xml",
+                new { controller = "Seo", action = "Sitemap", articleGroup = UrlParameter.Optional, city = UrlParameter.Optional }
+
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Seo", action = "Index", id = UrlParameter.Optional }
