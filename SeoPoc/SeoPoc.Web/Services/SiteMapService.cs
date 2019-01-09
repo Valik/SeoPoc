@@ -51,6 +51,8 @@ namespace SeoPoc.Web.Services
             public string ChangeFrequency { get; set; }
 
             public string SeaTitle { get; set; }
+
+            public string Types { get; set; }
         }
 
         public string GetSiteMapIndex()
@@ -67,7 +69,10 @@ namespace SeoPoc.Web.Services
                     new XElement(xmlns + "loc", Uri.EscapeUriString(sitemap.url.ToString())),
                     new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("yyyy-MM-dd"))),
                     new XElement(xmlns + "count", sitemap.count),
-                    new XElement(xmlns + "exceeded", sitemap.exceded)
+                    new XElement(xmlns + "exceeded", sitemap.exceded),
+                    new XElement(xmlns + "duplicatesExist", sitemap.duplicatesExist),
+                    new XElement(xmlns + "duplicatesCount", sitemap.duplicatesCount),
+                    new XElement(xmlns + "duplicates", sitemap.duplicates)
                 );
                 root.Add(urlElement);
             }
@@ -76,7 +81,7 @@ namespace SeoPoc.Web.Services
             return document.ToString(SaveOptions.DisableFormatting);
         }
 
-        public (Uri url, DateTime lastModifiedDate, int count, bool exceded)[] GetSiteMaps()
+        public (Uri url, DateTime lastModifiedDate, int count, bool exceded, bool duplicatesExist, int duplicatesCount, string duplicates)[] GetSiteMaps()
         {
             string[] cities;
 
@@ -100,18 +105,22 @@ namespace SeoPoc.Web.Services
                 {
                     var nodes = GetNodes(x.Item1, x.Item2).ToArray();
                     var count = nodes.Length;
-                    var duplicates = nodes.GroupBy(y => y.Location).Select(y => y.ToArray()).ToArray();
-                    var duplicatesNodes = duplicates.Where(y => y.Length > 1).ToArray();
+                    var duplicates = nodes.GroupBy(y => (y.Location, y.Types)).ToArray();
+                    var duplicatesNodes = duplicates.Where(y => y.Count() > 1).ToArray();
 
                     var item = (
                         url: new Uri(baseUri, $"/sitemap/{x.Item1}/{x.Item2}.xml"),
                         lastModifiedDate: now,
                         count: count,
-                        exceded: count > 50000
+                        exceded: count > 50000,
+                        duplicatesExist: duplicatesNodes.Length > 0,
+                        duplicatesCount: duplicatesNodes.Length,
+                        duplicates: string.Join("\n", duplicatesNodes.Select(y => $"count: {y.Count()} location: {y.Key.Item1} types: {y.Key.Item2}"))
                         );
                     return item;
                 })
-                .OrderByDescending(x => x.count)
+                .OrderByDescending(x => x.duplicatesCount)
+                .ThenByDescending(x => x.count)
                 .ToArray();
             return result;
         }
@@ -197,6 +206,7 @@ namespace SeoPoc.Web.Services
                     node.ChangeFrequency = "hourly";
 
                     node.SeaTitle = seoTitle;
+                    node.Types = string.Join(",", combination.Select(x => x.seoParameterType));
 
                     yield return node;
                 }
