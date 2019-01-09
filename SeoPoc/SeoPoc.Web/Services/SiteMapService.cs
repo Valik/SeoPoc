@@ -65,7 +65,9 @@ namespace SeoPoc.Web.Services
                 XElement urlElement = new XElement(
                     xmlns + "sitemap",
                     new XElement(xmlns + "loc", Uri.EscapeUriString(sitemap.url.ToString())),
-                    new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("yyyy-MM-dd")))
+                    new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("yyyy-MM-dd"))),
+                    new XElement(xmlns + "count", sitemap.count),
+                    new XElement(xmlns + "exceeded", sitemap.exceded)
                 );
                 root.Add(urlElement);
             }
@@ -74,7 +76,7 @@ namespace SeoPoc.Web.Services
             return document.ToString(SaveOptions.DisableFormatting);
         }
 
-        public (Uri url, DateTime lastModifiedDate)[] GetSiteMaps()
+        public (Uri url, DateTime lastModifiedDate, int count, bool exceded)[] GetSiteMaps()
         {
             string[] cities;
 
@@ -94,27 +96,24 @@ namespace SeoPoc.Web.Services
             var now = DateTime.Now;
 
             var result = urlSections
-                .Select(x => (
-                    url: new Uri(baseUri, $"/sitemap/{x.Item1}/{x.Item2}"),
-                    lastModifiedDate: now
-                ))
+                .Select(x =>
+                {
+                    var nodes = GetNodes(x.Item1, x.Item2).ToArray();
+                    var count = nodes.Length;
+                    var duplicates = nodes.GroupBy(y => y.Location).Select(y => y.ToArray()).ToArray();
+                    var duplicatesNodes = duplicates.Where(y => y.Length > 1).ToArray();
+
+                    var item = (
+                        url: new Uri(baseUri, $"/sitemap/{x.Item1}/{x.Item2}.xml"),
+                        lastModifiedDate: now,
+                        count: count,
+                        exceded: count > 50000
+                        );
+                    return item;
+                })
+                .OrderByDescending(x => x.count)
                 .ToArray();
             return result;
-        }
-
-        private static Uri GetBaseUri()
-        {
-            return new Uri($"{HttpContext.Current.Request.Url.Scheme}://{HttpContext.Current.Request.Url.Host}:{HttpContext.Current.Request.Url.Port}/");
-        }
-
-        private string ToUrlSection(string articleGroupName)
-        {
-            return articleGroupName.Replace(",", "-");
-        }
-
-        private string ToArticleGroupName(string urlSection)
-        {
-            return urlSection.Replace("-", ",");
         }
 
         public string GetSiteMap(string articleGroupUrlSection, string city)
@@ -283,6 +282,21 @@ namespace SeoPoc.Web.Services
                     yield return new[] { i, };
                 }
             }
+        }
+
+        private static Uri GetBaseUri()
+        {
+            return new Uri($"{HttpContext.Current.Request.Url.Scheme}://{HttpContext.Current.Request.Url.Host}:{HttpContext.Current.Request.Url.Port}/");
+        }
+
+        private string ToUrlSection(string articleGroupName)
+        {
+            return articleGroupName.Replace(",", "-");
+        }
+
+        private string ToArticleGroupName(string urlSection)
+        {
+            return urlSection.Replace("-", ",");
         }
     }
 }
