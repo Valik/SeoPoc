@@ -762,22 +762,22 @@ INSERT INTO [dbo].[ArticleGroupSeoParameter]
            ,[Alias]
            ,[ArticleGroupInternalName])
      VALUES
-(N'снять квартиру', N'1k', '1k'),
-(N'снят квартира', N'snyat-kvartira', '1k'),
-(N'сниму квартиру', N'snimu-kvartiru', '1k'),
-(N'сдача квартир', N'sdacha-kvartir', '1k'),
-(N'сдача квартиры', N'sdacha-kvartiry', '1k'),
-(N'аренда квартир', N'arenda-kvartir', '1k'),
-(N'съем квартиры', N'sem-kvartiry', '1k'),
-(N'сдам квартиру', N'sdam-kvartiru', '1k'),
+(N'снять квартиру', N'1k', N'1k'),
+(N'снят квартира', N'snyat-kvartira', N'1k'),
+(N'сниму квартиру', N'snimu-kvartiru', N'1k'),
+(N'сдача квартир', N'sdacha-kvartir', N'1k'),
+--(N'сдача квартиры', N'sdacha-kvartiry', N'1k'),
+(N'аренда квартир', N'arenda-kvartir', N'1k'),
+(N'съем квартиры', N'sem-kvartiry', N'1k'),
+(N'сдам квартиру', N'sdam-kvartiru', N'1k'),
 
-(N'снять 1 квартиру', N'snyat-1-kvartiru', '1k'),
-(N'снять 1 комнатную квартиру', N'1k-rent', '1k'),
-(N'сниму 1 комнатную квартиру', N'snimu-1-komnatnuyu-kvartiru', '1k'),
-(N'сдача 1 комнатной квартиры', N'sdacha-1-komnatnoj-kvartiry', '1k'),
-(N'аренда 1 комнатной квартиры', N'arenda-1-komnatnoj-kvartiry', '1k'),
-(N'съем 1 комнатной квартиры', N'sem-1-komnatnoj-kvartiry', '1k'),
-(N'сдам 1 комнатную квартиру', N'sdam-1-komnatnuyu-kvartiru', '1k'),
+(N'снять 1 квартиру', N'snyat-1-kvartiru', N'1k'),
+(N'снять 1 комнатную квартиру', N'1k-rent', N'1k'),
+--(N'сниму 1 комнатную квартиру', N'snimu-1-komnatnuyu-kvartiru', N'1k'),
+(N'сдача 1 комнатной квартиры', N'sdacha-1-komnatnoj-kvartiry', N'1k'),
+(N'аренда 1 комнатной квартиры', N'arenda-1-komnatnoj-kvartiry', N'1k'),
+(N'съем 1 комнатной квартиры', N'sem-1-komnatnoj-kvartiry', N'1k'),
+--(N'сдам 1 комнатную квартиру', N'sdam-1-komnatnuyu-kvartiru', N'1k'),
 
 (N'снять комнату', N'k', 'K'),
 (N'снят комната', N'snyat-komnata', 'K'),
@@ -836,20 +836,20 @@ INSERT INTO [dbo].[ArticleGroupSeoParameter]
 (N'аренда 2 3 комнатных квартир', N'arenda-2-3-komnatnoj-kvartiry', '2k,3k'),
 (N'сдам 2 3 комнатную квартиру', N'sdam-2-3-komnatnuyu-kvartiru', '2k,3k'),
 
-(N'снять 4 квартиру', N'snyat-4-kvartiru', '3k'),
-(N'снять 4 комнатную квартиру', N'4k-rent', '3k'),
-(N'аренда 4 комнатной квартиры', N'arenda-4-komnatnoj-kvartiry', '3k'),
-(N'сдам 4 комнатную квартиру', N'sdam-4-komnatnuyu-kvartiru', '3k'),
-(N'сдам 4 квартиру', N'sdam-4-kvartiru', '3k'),
+(N'снять 4 квартиру', N'snyat-4-kvartiru', '4k'),
+(N'снять 4 комнатную квартиру', N'4k-rent', '4k'),
+(N'аренда 4 комнатной квартиры', N'arenda-4-komnatnoj-kvartiry', '4k'),
+(N'сдам 4 комнатную квартиру', N'sdam-4-komnatnuyu-kvartiru', '4k'),
+(N'сдам 4 квартиру', N'sdam-4-kvartiru', '4k'),
 
-(N'снять 5 квартиру', N'snyat-5-kvartiru', '3k'),
-(N'снять 5 комнатную квартиру', N'5k-rent', '3k'),
-(N'аренда 5 комнатной квартиры', N'arenda-5-komnatnoj-kvartiry', '3k'),
-(N'сдаю 5 комнатную квартиру', N'sdaiy-5-komnatnuyu-kvartiru', '3k'),
+(N'снять 5 квартиру', N'snyat-5-kvartiru', '5k'),
+(N'снять 5 комнатную квартиру', N'5k-rent', '5k'),
+(N'аренда 5 комнатной квартиры', N'arenda-5-komnatnoj-kvartiry', '5k'),
+(N'сдаю 5 комнатную квартиру', N'sdaiy-5-komnatnuyu-kvartiru', '5k'),
 
-(N'снять 3 4 комнатную квартиру', N'3-4-rent', '3k'),
-(N'сниму 3 4 комнатную квартиру', N'snimu-3-4-komnatnuyu-kvartiru', '3k'),
-(N'аренда 3 4 комнатных квартир', N'arenda-3-4-komnatnoj-kvartiry', '3k')
+(N'снять 3 4 комнатную квартиру', N'3-4-rent', '3k,4k'),
+(N'сниму 3 4 комнатную квартиру', N'snimu-3-4-komnatnuyu-kvartiru', '3k,4k'),
+(N'аренда 3 4 комнатных квартир', N'arenda-3-4-komnatnoj-kvartiry', '3k,4k')
 
 GO
 
