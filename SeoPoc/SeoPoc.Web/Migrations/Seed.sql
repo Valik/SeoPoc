@@ -763,7 +763,7 @@ INSERT INTO [dbo].[ArticleGroupSeoParameter]
            ,[ArticleGroupInternalName])
      VALUES
 (N'снять квартиру', N'1k', N'1k'),
-(N'снят квартира', N'snyat-kvartira', N'1k'),
+--(N'снят квартира', N'snyat-kvartira', N'1k'),
 (N'сниму квартиру', N'snimu-kvartiru', N'1k'),
 (N'сдача квартир', N'sdacha-kvartir', N'1k'),
 --(N'сдача квартиры', N'sdacha-kvartiry', N'1k'),
@@ -771,7 +771,7 @@ INSERT INTO [dbo].[ArticleGroupSeoParameter]
 (N'съем квартиры', N'sem-kvartiry', N'1k'),
 (N'сдам квартиру', N'sdam-kvartiru', N'1k'),
 
-(N'снять 1 квартиру', N'snyat-1-kvartiru', N'1k'),
+--(N'снять 1 квартиру', N'snyat-1-kvartiru', N'1k'),
 (N'снять 1 комнатную квартиру', N'1k-rent', N'1k'),
 --(N'сниму 1 комнатную квартиру', N'snimu-1-komnatnuyu-kvartiru', N'1k'),
 (N'сдача 1 комнатной квартиры', N'sdacha-1-komnatnoj-kvartiry', N'1k'),
