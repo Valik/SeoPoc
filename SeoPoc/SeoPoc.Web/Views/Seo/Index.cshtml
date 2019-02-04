@@ -1,7 +1,24 @@
 ﻿@using SeoPoc.Web.Helpers
 @model SeoPoc.Web.Services.SeoDetails
 @{
-  ViewBag.Title = Model.IfNotNull(x => x.RoutingResult.SeoTitle, "SEO POC");
+
+  var titleSource = Model.IfNotNull(x => x.RoutingResult.SeoTitle, "SEO POC");
+  var title = titleSource + " - Pullmeout - Все объявления съемного жилья от собственников в одном месте";
+  var description = "Все объявления об аренде жилья в одном месте." + titleSource;
+}
+
+@section meta
+{
+  <title>@title</title>
+
+  <link rel="canonical" href="@Model.Breadcrumbs[Model.Breadcrumbs.Length - 1].Url">
+  
+  <meta name="description" itemprop="description" content="@description">
+  
+  <meta property="og:title" content="@title">
+  <meta property="og:description" content="@description">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="website">
 }
 
 <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">
@@ -56,3 +73,36 @@
     </p>
   </div>
 </div>
+
+
+@section footer{
+  <p class="SeoText">Pullmeout - Все объявления съемного жилья от собственников в одном месте. @(titleSource). Удобный поиск квартир и комнат с фильтрами по районам города и ценам.</p>
+  <p class="SeoText">Аренда квартиры на прямую от собственника. Без комиссий и посредников.</p>
+  <p class="SeoText">Найдите подходящее жилье в кратчайшие сроки.</p>
+  <p class="SeoText">Более 700 объявлений на сайте каждый день.</p>
+
+  <div class="container">
+    <div class="col-md-3 company-details">
+      <div class="icon-top red-text"><img src="http://www.pullmeout.ru/wp-content/uploads/2016/02/map25-redish.png" alt="location">
+      </div>
+      <div class="zerif-footer-address">Санкт-Петербург</div>
+    </div>
+    <div class="col-md-3 company-details">
+      <div class="icon-top green-text"><img src="http://www.pullmeout.ru/wp-content/uploads/2016/02/envelope4-green.png" alt="email">
+      </div>
+      <div class="zerif-footer-email"><a href="mailto:nevalikne@gmail.com">nevalikne@gmail.com</a>
+      </div>
+    </div>
+    <div class="col-md-3 company-details">
+      <div class="icon-top blue-text">
+        <img src="http://www.pullmeout.ru/wp-content/uploads/2017/03/Vk-icon-e1489735044343.png" alt="phone">
+      </div>
+      <div class="zerif-footer-phone">
+        <a href="https://vk.com/pullmeoutrealtyspb" target="_blank">Наша группа</a>
+      </div>
+    </div>
+    <div class="col-md-3 copyright">
+      <p>&copy; @DateTime.Now.Year - Pullmeout ©n</p>
+    </div>
+  </div>
+}

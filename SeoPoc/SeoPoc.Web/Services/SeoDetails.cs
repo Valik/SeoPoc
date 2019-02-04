@@ -5,5 +5,7 @@
         public SeoRoutingResult RoutingResult { get; set; }
 
         public BreadcrumbItem[]  Breadcrumbs { get; set; }
+
+        public string CityName { get; set; }
     }
 }

@@ -38,6 +38,11 @@ namespace SeoPoc.Web.Services
                 string citySection = string.Empty;
                 string articleGroupSection = string.Empty;
 
+                var result = new SeoDetails
+                {
+                    RoutingResult = routingResult,
+                };
+
                 var breadcrumbs = new List<BreadcrumbItem>();
                 if (routingResult.CityId.HasValue)
                 {
@@ -49,6 +54,8 @@ namespace SeoPoc.Web.Services
                         Title = seoCity.Value,
                         Url = $"/{citySection}/",
                     });
+
+                    result.CityName = seoCity.Value;
                 }
 
                 if (!string.IsNullOrEmpty(routingResult.ArticleGroupInternalName))
@@ -73,11 +80,7 @@ namespace SeoPoc.Web.Services
                     });
                 }
 
-                var result = new SeoDetails
-                {
-                    RoutingResult = routingResult,
-                    Breadcrumbs = breadcrumbs.ToArray(),
-                };
+                result.Breadcrumbs = breadcrumbs.ToArray();
                 return result;
             }
         }
