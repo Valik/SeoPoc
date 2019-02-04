@@ -1,30 +1,43 @@
 ﻿@using SeoPoc.Web.Helpers
-@model SeoPoc.Web.Services.SeoRoutingResult
+@model SeoPoc.Web.Services.SeoDetails
 @{
-  ViewBag.Title = Model.IfNotNull(x => x.SeoTitle, "SEO POC");
+  ViewBag.Title = Model.IfNotNull(x => x.RoutingResult.SeoTitle, "SEO POC");
 }
 
+<ol itemscope="" itemtype="http://schema.org/BreadcrumbList">
+  
+  @for (var i = 0; i < Model.Breadcrumbs.Length; i++)
+  {
+      var item = Model.Breadcrumbs[i];
+
+      <a href="@item.Url" itemprop="item" itemtype="http://schema.org/Thing" itemscope="">
+        <span itemprop="name">@item.Title</span>
+        <meta itemprop="position" content="@(i + 1)">
+      </a>
+  }
+</ol>
+
 <div class="jumbotron">
-  <h1>@Model.IfNotNull(x => x.SeoTitle, "SEO POC")</h1>
+  <h1>@Model.IfNotNull(x => x.RoutingResult.SeoTitle, "SEO POC")</h1>
 </div>
 
 <div class="row">
   <div class="col-md-3">
     <h2>City</h2>
     <p>
-      @Model.IfNotNull(x => x.CityId)
+      @Model.IfNotNull(x => x.RoutingResult.CityId)
     </p>
   </div>
   <div class="col-md-3">
     <h2>District</h2>
     <p>
-      @Model.IfNotNull(x => x.DistrictId)
+      @Model.IfNotNull(x => x.RoutingResult.DistrictId)
     </p>
   </div>
   <div class="col-md-3">
     <h2>ArticleGroupInternalName</h2>
     <p>
-      @Model.IfNotNull(x => x.ArticleGroupInternalName)
+      @Model.IfNotNull(x => x.RoutingResult.ArticleGroupInternalName)
     </p>
   </div>
 </div>
@@ -33,13 +46,13 @@
   <div class="col-md-4">
     <h2>PriceFrom</h2>
     <p>
-      @Model.IfNotNull(x => x.PriceFrom)
+      @Model.IfNotNull(x => x.RoutingResult.PriceFrom)
     </p>
   </div>
   <div class="col-md-4">
     <h2>PriceTo</h2>
     <p>
-      @Model.IfNotNull(x => x.PriceTo)
+      @Model.IfNotNull(x => x.RoutingResult.PriceTo)
     </p>
   </div>
 </div>

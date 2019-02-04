@@ -31,6 +31,57 @@ namespace SeoPoc.Web.Services
             return context => context.Set<T>();
         }
 
+        public SeoDetails ConstructSeoDetails(SeoRoutingResult routingResult)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                string citySection = string.Empty;
+                string articleGroupSection = string.Empty;
+
+                var breadcrumbs = new List<BreadcrumbItem>();
+                if (routingResult.CityId.HasValue)
+                {
+                    var seoCity = context.Set<DbCitySeoParameter>().Where(x => x.CityId == routingResult.CityId.Value).OrderBy(x => x.Id).First();
+                    citySection = seoCity.Alias + "-" + SeoParameterType.City;
+
+                    breadcrumbs.Add(new BreadcrumbItem
+                    {
+                        Title = seoCity.Value,
+                        Url = $"/{citySection}/",
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(routingResult.ArticleGroupInternalName))
+                {
+                    var seoArticleGroup = context.Set<DbArticleGroupSeoParameter>().Where(x => x.ArticleGroupInternalName == routingResult.ArticleGroupInternalName).OrderBy(x => x.Id).First();
+                    articleGroupSection = seoArticleGroup.Alias + "-" + SeoParameterType.ArticleGroup;
+                    breadcrumbs.Add(new BreadcrumbItem
+                    {
+                        Title = seoArticleGroup.Value,
+                        Url = $"/{citySection}/{articleGroupSection}/",
+                    });
+                }
+
+                if (routingResult.DistrictId.HasValue)
+                {
+                    var seoDistrict = context.Set<DbDistrictSeoParameter>().Where(x => x.DistrictId == routingResult.DistrictId.Value).OrderBy(x => x.Id).First();
+                    var seoDistrictSection = seoDistrict.Alias + "-" + SeoParameterType.District;
+                    breadcrumbs.Add(new BreadcrumbItem
+                    {
+                        Title = seoDistrict.Value,
+                        Url = $"/{citySection}/{articleGroupSection}/{seoDistrictSection}/",
+                    });
+                }
+
+                var result = new SeoDetails
+                {
+                    RoutingResult = routingResult,
+                    Breadcrumbs = breadcrumbs.ToArray(),
+                };
+                return result;
+            }
+        }
+
         public SeoRoutingResult Route(Uri currentUrl)
         {
             var segments = currentUrl
