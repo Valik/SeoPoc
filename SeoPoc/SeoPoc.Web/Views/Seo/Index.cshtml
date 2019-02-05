@@ -2,7 +2,7 @@
 @model SeoPoc.Web.Services.SeoDetails
 @{
 
-  var titleSource = Model.IfNotNull(x => x.RoutingResult.SeoTitle, "SEO POC");
+  var titleSource = Model.RoutingResult.IfNotNull(x => x.SeoTitle, "SEO POC");
   var title = titleSource + " - Pullmeout - Все объявления съемного жилья от собственников в одном месте";
   var description = "Все объявления об аренде жилья в одном месте." + titleSource;
 }
@@ -11,7 +11,7 @@
 {
   <title>@title</title>
 
-  <link rel="canonical" href="@Model.Breadcrumbs[Model.Breadcrumbs.Length - 1].Url">
+  <link rel="canonical" href="@(Model.Url)">
   
   <meta name="description" itemprop="description" content="@description">
   
@@ -22,39 +22,42 @@
 }
 
 <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">
-  
-  @for (var i = 0; i < Model.Breadcrumbs.Length; i++)
+  @for (var i = 0; i < Model.Breadcrumbs.Count; i++)
   {
-      var item = Model.Breadcrumbs[i];
+    var item = Model.Breadcrumbs[i];
 
+    <li class="" itemscope="" itemprop="itemListElement" itemtype="http://schema.org/ListItem">
       <a href="@item.Url" itemprop="item" itemtype="http://schema.org/Thing" itemscope="">
         <span itemprop="name">@item.Title</span>
         <meta itemprop="position" content="@(i + 1)">
       </a>
+
+      <span>></span>
+    </li>
   }
 </ol>
 
 <div class="jumbotron">
-  <h1>@Model.IfNotNull(x => x.RoutingResult.SeoTitle, "SEO POC")</h1>
+  <h1 class="Page__title">@Model.RoutingResult.IfNotNull(x => x.SeoTitle, "SEO POC")</h1>
 </div>
 
 <div class="row">
   <div class="col-md-3">
     <h2>City</h2>
     <p>
-      @Model.IfNotNull(x => x.RoutingResult.CityId)
+      @Model.RoutingResult.IfNotNull(x => x.CityId)
     </p>
   </div>
   <div class="col-md-3">
     <h2>District</h2>
     <p>
-      @Model.IfNotNull(x => x.RoutingResult.DistrictId)
+      @Model.RoutingResult.IfNotNull(x => x.DistrictId)
     </p>
   </div>
   <div class="col-md-3">
     <h2>ArticleGroupInternalName</h2>
     <p>
-      @Model.IfNotNull(x => x.RoutingResult.ArticleGroupInternalName)
+      @Model.RoutingResult.IfNotNull(x => x.ArticleGroupInternalName)
     </p>
   </div>
 </div>
@@ -63,17 +66,16 @@
   <div class="col-md-4">
     <h2>PriceFrom</h2>
     <p>
-      @Model.IfNotNull(x => x.RoutingResult.PriceFrom)
+      @Model.RoutingResult.IfNotNull(x => x.PriceFrom)
     </p>
   </div>
   <div class="col-md-4">
     <h2>PriceTo</h2>
     <p>
-      @Model.IfNotNull(x => x.RoutingResult.PriceTo)
+      @Model.RoutingResult.IfNotNull(x => x.PriceTo)
     </p>
   </div>
 </div>
-
 
 @section footer{
   <p class="SeoText">Pullmeout - Все объявления съемного жилья от собственников в одном месте. @(titleSource). Удобный поиск квартир и комнат с фильтрами по районам города и ценам.</p>
@@ -95,14 +97,15 @@
     </div>
     <div class="col-md-3 company-details">
       <div class="icon-top blue-text">
-        <img src="http://www.pullmeout.ru/wp-content/uploads/2017/03/Vk-icon-e1489735044343.png" alt="phone">
+        <img src="http://www.pullmeout.ru/wp-content/uploads/2017/03/Vk-icon-e1489735044343.png" alt="vk">
       </div>
       <div class="zerif-footer-phone">
         <a href="https://vk.com/pullmeoutrealtyspb" target="_blank">Наша группа</a>
+        <a href="https://vk.com/pullmeoutrealtymoskow" target="_blank">Наша группа</a>
       </div>
     </div>
     <div class="col-md-3 copyright">
-      <p>&copy; @DateTime.Now.Year - Pullmeout ©n</p>
+      <p>&copy; @DateTime.Now.Year - Pullmeout ©</p>
     </div>
   </div>
 }

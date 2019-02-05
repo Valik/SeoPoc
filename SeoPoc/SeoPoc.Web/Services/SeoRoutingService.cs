@@ -31,19 +31,26 @@ namespace SeoPoc.Web.Services
             return context => context.Set<T>();
         }
 
-        public SeoDetails ConstructSeoDetails(SeoRoutingResult routingResult)
+        public SeoDetails ConstructSeoDetails(string url, SeoRoutingResult routingResult)
         {
             using (var context = new ApplicationDbContext())
             {
                 string citySection = string.Empty;
                 string articleGroupSection = string.Empty;
+                var breadcrumbs = new List<BreadcrumbItem>();
 
                 var result = new SeoDetails
                 {
+                    Url = url,
                     RoutingResult = routingResult,
+                    Breadcrumbs = breadcrumbs,
                 };
 
-                var breadcrumbs = new List<BreadcrumbItem>();
+                if (routingResult == null)
+                {
+                    return result;
+                }
+                
                 if (routingResult.CityId.HasValue)
                 {
                     var seoCity = context.Set<DbCitySeoParameter>().Where(x => x.CityId == routingResult.CityId.Value).OrderBy(x => x.Id).First();
@@ -80,7 +87,6 @@ namespace SeoPoc.Web.Services
                     });
                 }
 
-                result.Breadcrumbs = breadcrumbs.ToArray();
                 return result;
             }
         }

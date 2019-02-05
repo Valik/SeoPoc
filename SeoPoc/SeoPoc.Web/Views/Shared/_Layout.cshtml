@@ -12,20 +12,78 @@
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Seo", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
-            </div>
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+              
+          <a class="brand" href="/apartments?utm_source=pullmeout_seo&amp;utm_medium=top_bar&amp;utm_campaign=logo_click"><img src="/static/img/pull-me-out-logo-black.png" alt="pullmeout"></a>
         </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <a _ngcontent-c2="" class="take-access mat-button ng-star-inserted" href="/Account/Registerviewer" mat-button="" tabindex="0" aria-disabled="false">
+                <span class="mat-button-wrapper">
+                  <span _ngcontent-c2="">Получить доступ</span>
+                </span>
+                <div class="mat-button-ripple mat-ripple" matripple="" />
+                <div class="mat-button-focus-overlay" />
+              </a>
+            </li>
+            
+            <li>
+              <a _ngcontent-c2="" href="http://www.pullmeout.ru/why-pullmeout/" mat-button="" target="_blank" class="mat-button ng-star-inserted" onclick="yaCounter42384909.reachGoal('why-pullmeout'); return true;" tabindex="0" aria-disabled="false">
+                <span class="mat-button-wrapper">
+                  Для кого PullMeOut?
+                </span>
+                <div class="mat-button-ripple mat-ripple" matripple="" />
+                <div class="mat-button-focus-overlay" />
+              </a>
+            </li>
+            
+            <li>
+              <a _ngcontent-c2="" href="http://www.pullmeout.ru/principle-of-operation/" mat-button="" target="_blank" class="mat-button ng-star-inserted" onclick="yaCounter42384909.reachGoal('open-principle-of-operation'); return true;" tabindex="0" aria-disabled="false">
+                <span class="mat-button-wrapper">
+                  Принцип работы
+                </span>
+                <div class="mat-button-ripple mat-ripple" matripple="" />
+                <div class="mat-button-focus-overlay" />
+              </a>
+            </li>
+            
+            <li>
+              <a _ngcontent-c2="" href="http://www.pullmeout.ru/blog/" mat-button="" target="_blank" class="mat-button ng-star-inserted" onclick="yaCounter42384909.reachGoal('open-usefull-info'); return true;" tabindex="0" aria-disabled="false">
+                <span class="mat-button-wrapper">
+                  Советы по аренде
+                </span>
+                <div class="mat-button-ripple mat-ripple" matripple="" />
+                <div class="mat-button-focus-overlay" />
+              </a>
+            </li>
+            
+            <li>
+              
+            </li>
+            
+            <li>
+              
+            </li>
+            
+            <li>
+              
+            </li>
+            
+            <li>
+              
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+
     </div>
     <div class="container body-content">
         @RenderBody()

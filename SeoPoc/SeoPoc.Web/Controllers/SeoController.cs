@@ -14,7 +14,7 @@ namespace SeoPoc.Web.Controllers
         public ActionResult Index()
         {
             var seoRoutingResult = HttpContext.Items["HTTPCONTEXT:SEOROUTING:RESULT"] as SeoRoutingResult;
-            var details = new SeoRoutingService().ConstructSeoDetails(seoRoutingResult);
+            var details = new SeoRoutingService().ConstructSeoDetails(HttpContext.Request.RawUrl, seoRoutingResult);
 
             return View(details);
         }
