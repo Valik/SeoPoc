@@ -10,6 +10,6 @@ namespace SeoPoc.Web.Services
 
         public string CityName { get; set; }
 
-        public string Url { get; set; }
+        public string CanonicalUrl { get; set; }
     }
 }

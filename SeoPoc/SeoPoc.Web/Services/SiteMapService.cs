@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 using SeoPoc.Web.DataAccess;
 using SeoPoc.Web.DataAccess.Entities;
+using SeoPoc.Web.Helpers;
 using SeoPoc.Web.Models;
 
 namespace SeoPoc.Web.Services
@@ -66,7 +67,7 @@ namespace SeoPoc.Web.Services
             {
                 XElement urlElement = new XElement(
                     xmlns + "sitemap",
-                    new XElement(xmlns + "loc", Uri.EscapeUriString(sitemap.url.ToString())),
+                    new XElement(xmlns + "loc", Uri.EscapeUriString(sitemap.url.ToString().ToSeoUrl())),
                     new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemap.lastModifiedDate.ToString("yyyy-MM-dd"))),
                     new XElement(xmlns + "count", sitemap.count),
                     new XElement(xmlns + "exceeded", sitemap.exceded),
@@ -136,7 +137,7 @@ namespace SeoPoc.Web.Services
             {
                 XElement urlElement = new XElement(
                     xmlns + "url",
-                    new XElement(xmlns + "loc", Uri.EscapeUriString(new Uri(baseUri, sitemapNode.Location).ToString())),
+                    new XElement(xmlns + "loc", Uri.EscapeUriString(new Uri(baseUri, sitemapNode.Location).ToString().ToSeoUrl())),
                     new XElement(xmlns + "lastmod", Uri.EscapeUriString(sitemapNode.LastModified)),
                     new XElement(xmlns + "changefreq", Uri.EscapeUriString(sitemapNode.ChangeFrequency)),
                     new XElement(xmlns + "priority", Uri.EscapeUriString(sitemapNode.Priority)),
@@ -200,7 +201,7 @@ namespace SeoPoc.Web.Services
                     var seoTitle = string.Join(" ", placement.Select(x => x.seoParameter.Value));
                     var url = string.Join("/", placement.Select(x => x.seoParameter.Alias + "-" + UrlSectionPostfixes[x.seoParameterType]));
 
-                    node.Location = "/" + url;
+                    node.Location = "/" + url.ToLowerInvariant();
                     node.LastModified = now;
                     node.Priority = nodePriority;
                     node.ChangeFrequency = "hourly";

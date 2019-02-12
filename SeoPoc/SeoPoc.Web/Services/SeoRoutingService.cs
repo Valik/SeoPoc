@@ -5,6 +5,7 @@ using System.Linq;
 
 using SeoPoc.Web.DataAccess;
 using SeoPoc.Web.DataAccess.Entities;
+using SeoPoc.Web.Helpers;
 using SeoPoc.Web.Models;
 
 namespace SeoPoc.Web.Services
@@ -41,7 +42,7 @@ namespace SeoPoc.Web.Services
 
                 var result = new SeoDetails
                 {
-                    Url = url,
+                    CanonicalUrl = url.ToSeoUrl(),
                     RoutingResult = routingResult,
                     Breadcrumbs = breadcrumbs,
                 };

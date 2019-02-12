@@ -212,6 +212,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\UrlExtensions.cs" />
     <Compile Include="Migrations\201812171314197_0001-Initial.cs" />
     <Compile Include="Migrations\201812171314197_0001-Initial.Designer.cs">
       <DependentUpon>201812171314197_0001-Initial.cs</DependentUpon>

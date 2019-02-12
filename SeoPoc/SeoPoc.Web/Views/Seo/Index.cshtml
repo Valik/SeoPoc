@@ -1,17 +1,15 @@
 ﻿@using SeoPoc.Web.Helpers
 @model SeoPoc.Web.Services.SeoDetails
 @{
-
-  var titleSource = Model.RoutingResult.IfNotNull(x => x.SeoTitle, "SEO POC");
-  var title = titleSource + " - Pullmeout - Все объявления съемного жилья от собственников в одном месте";
-  var description = "Все объявления об аренде жилья в одном месте." + titleSource;
+    var title = Model.RoutingResult.IfNotNull(x => x.SeoTitle, "SEO POC") + " на Pullmeout";
+    var description = "Все объявления об аренде жилья " + Model.CityName + ". Pullmeout - Все объявления съемного жилья от собственников в одном месте.";
 }
 
 @section meta
 {
   <title>@title</title>
 
-  <link rel="canonical" href="@(Model.Url)">
+  <link rel="canonical" href="@(Model.CanonicalUrl)">
   
   <meta name="description" itemprop="description" content="@description">
   
@@ -38,7 +36,7 @@
 </ol>
 
 <div class="jumbotron">
-  <h1 class="Page__title">@Model.RoutingResult.IfNotNull(x => x.SeoTitle, "SEO POC")</h1>
+  <h1>@Model.RoutingResult.IfNotNull(x => x.SeoTitle, "SEO POC")</h1>
 </div>
 
 <div class="row">
@@ -77,8 +75,47 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="list-group">
+  
+    <div itemscope="" itemtype="http://schema.org/Product" class="list-group-item">
+      <meta itemprop="description" content="2-к квартира, 72 м², 4/5 эт. в Санкт-Петербурге">
+
+      <a itemprop="url" href="/url1" title="2-к квартира, 72 м², 4/5 эт. в Санкт-Петербурге">
+        <span itemprop="name">2-к квартира, 72 м², 4/5 эт.</span>
+      </a>
+      <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+        <span itemprop="priceCurrency" content="RUB"></span>
+        <span itemprop="price" content="10000">
+          10000 <span>₽</span>
+        </span>
+      </div>
+    
+      <meta itemprop="position" content="1">
+    </div>
+  
+    <div itemscope="" itemtype="http://schema.org/Product" class="list-group-item">
+      <meta itemprop="description" content="2-к квартира, 72 м², 4/5 эт. в Санкт-Петербурге">
+
+      <a itemprop="url" href="/url2" title="2-к квартира, 72 м², 4/5 эт. в Санкт-Петербурге">
+        <span itemprop="name">2-к квартира, 72 м², 4/5 эт.</span>
+      </a>
+      <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+        <span itemprop="priceCurrency" content="RUB"></span>
+        <span itemprop="price" content="10000">
+          10000 <span>₽</span>
+        </span>
+      </div>
+    
+      <meta itemprop="position" content="2">
+    </div>
+
+  </div>
+  
+</div>
+
 @section footer{
-  <p class="SeoText">Pullmeout - Все объявления съемного жилья от собственников в одном месте. @(titleSource). Удобный поиск квартир и комнат с фильтрами по районам города и ценам.</p>
+  <p class="SeoText">Pullmeout - Все объявления съемного жилья от собственников @Model.CityName. Эффективный поиск квартир и комнат с фильтрами по районам города и ценам.</p>
   <p class="SeoText">Аренда квартиры на прямую от собственника. Без комиссий и посредников.</p>
   <p class="SeoText">Найдите подходящее жилье в кратчайшие сроки.</p>
   <p class="SeoText">Более 700 объявлений на сайте каждый день.</p>
